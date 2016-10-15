@@ -18,10 +18,13 @@ using System.Collections;
 [RequireComponent(typeof(Collider))]
 public class Teleport : MonoBehaviour, IGvrGazeResponder {
   private Vector3 startingPosition;
+  private GameObject text = gameObject.Find("text");
+  private GameObject cube = gameObject.Find("Cube");
 
   void Start() {
     startingPosition = transform.localPosition;
     SetGazedAt(false);
+    text.transform.position = cube.transform.position;
   }
 
   void LateUpdate() {
@@ -33,6 +36,14 @@ public class Teleport : MonoBehaviour, IGvrGazeResponder {
 
   public void SetGazedAt(bool gazedAt) {
     GetComponent<Renderer>().material.color = gazedAt ? Color.green : Color.red;
+    if (gazedAt)
+        {
+            text.GetComponent(MeshText).enabled = true;
+        }
+    else
+        {
+            text.GetComponent(MeshText).enabled = false;
+        }
   }
 
   public void Reset() {
@@ -59,7 +70,8 @@ public class Teleport : MonoBehaviour, IGvrGazeResponder {
     direction.y = Mathf.Clamp(direction.y, 0.5f, 1f);
     float distance = 2 * Random.value + 1.5f;
     transform.localPosition = direction * distance;
-  }
+    gameObject.Find("text").transform.position = gameObject.Find("Cube").transform.position;
+    }
 
   #region IGvrGazeResponder implementation
 
