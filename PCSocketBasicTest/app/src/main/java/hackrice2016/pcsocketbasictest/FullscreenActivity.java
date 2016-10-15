@@ -7,11 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import java.net.*;
 import java.io.*;
+import android.view.KeyEvent; // import java.awt.event.*;
 import java.util.*;
 
 /**
@@ -39,7 +42,8 @@ public class FullscreenActivity extends AppCompatActivity {
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
     private TextView mContentView;
-    private BufferedReader in;
+    private ObjectInputStream in;
+
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -180,20 +184,38 @@ public class FullscreenActivity extends AppCompatActivity {
                     PrintWriter out =
                             new PrintWriter(clientSocket.getOutputStream(), true);
                     System.out.println("out made");
-                    in = new BufferedReader(
-                            new InputStreamReader(clientSocket.getInputStream()));
+                    in = new ObjectInputStream(clientSocket.getInputStream());
                     System.out.println("in made");
-                    String inputLine, outputLine;
-                    while ((inputLine = in.readLine()) != null){
-                        final String update = inputLine;
-                        System.out.println(inputLine);
+                    String outputLine;
+                    Object input = null;
+
+                    try {
+                        input = in.readObject();
+                    }catch (ClassNotFoundException cnfe) {
+                        System.out.println(cnfe);
+                        System.out.println("PROBLEMS");
+                    }
+                    while (input != null){
+                        //final char update = inputLine;
+                        System.out.println(input);
+                        final KeyEvent ke = new KeyEvent(0, String.valueOf((char) input),  0, 0);
+                        //System.out.println(ke.getUnicodeChar());
+                        final String s = (String) ke.getCharacters();
+                        System.out.println((char) ke.getUnicodeChar());
+
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                mContentView.setText(update);
+                              mContentView.setText("acacsa");
                             }
                         });
+                        try {
+                            input = in.readObject();
+                        }catch (ClassNotFoundException cnfe) {
+                            input = null;
+                        }
                     }
+                    System.out.println("out");
                 } catch (IOException e){
                     System.out.println("No connection made!!");
                     System.out.println(e);
