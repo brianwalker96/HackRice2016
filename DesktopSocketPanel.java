@@ -16,24 +16,8 @@ public class DesktopSocketPanel extends JPanel implements KeyListener
     public DesktopSocketPanel() {
         this.setPreferredSize(new Dimension(500,500));
         addKeyListener(this);
-        //setLayout(new BorderLayout());
-
-        //JPanel subpanel = new JPanel();
-        //subpanel.setLayout(new FlowLayout());
-       // add(subpanel, BorderLayout.NORTH);
-
-        //box = new JTextField("Test", 100);
-        //box.setHorizontalAlignment(SwingConstants.LEFT);
-        //subpanel.add(box);
-
-        //JButton button = new JButton("Send");
-        //button.addActionListener(new Listener());
-        //subpanel.add(button);
-
-        //label = new JLabel("Received");
-        //add(label, BorderLayout.CENTER);
         
-        String host = "192.168.24.210";//"192.168.24.168";//"127.0.0.1";////"10.0.2.15";//
+        String host = "192.168.24.210";
         int port = 6666;
 
         try {
@@ -44,19 +28,13 @@ public class DesktopSocketPanel extends JPanel implements KeyListener
             System.out.println("Error: could not connect to server!");
             System.exit(0);
         }
-        
-
     }
-
-//     private class Listener implements ActionListener {
-//         public void actionPerformed(ActionEvent e) {
-//             out.println(box.getText());
-//         }
-//     }
+    
      public void addNotify() {
         super.addNotify();
         requestFocus();
     }
+    
     public void keyPressed(KeyEvent e) {
       System.out.println("pressed");
       if (e.isActionKey()){
