@@ -39,6 +39,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
     private TextView mContentView;
+    private BufferedReader in;
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -168,36 +169,38 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
     public void dummyClicked(View view) {
-        new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             public void run() {
                 try {
                     System.out.println("Connection attempted");
                     ServerSocket serverSocket = new ServerSocket(6666);
-                    System.out.println(serverSocket.getInetAddress());
-                    System.out.println(serverSocket.getLocalPort());
-                    System.out.println(serverSocket.getLocalSocketAddress());
                     System.out.println(serverSocket.isBound());
-                    System.out.println("serverSocket made");
                     Socket clientSocket = serverSocket.accept();
-                    System.out.println("serverSocket accepted");
+                    System.out.println("Connection made");
                     PrintWriter out =
                             new PrintWriter(clientSocket.getOutputStream(), true);
                     System.out.println("out made");
-                    BufferedReader in = new BufferedReader(
+                    in = new BufferedReader(
                             new InputStreamReader(clientSocket.getInputStream()));
                     System.out.println("in made");
                     String inputLine, outputLine;
-                    System.out.println("Connection made?");
                     while ((inputLine = in.readLine()) != null){
+                        final String update = inputLine;
                         System.out.println(inputLine);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mContentView.setText(update);
+                            }
+                        });
                     }
-
                 } catch (IOException e){
                     System.out.println("No connection made!!");
                     System.out.println(e);
                 }
             }
-        }).start();
+        });
+        t.start();
         String text = mContentView.getText().toString();
         if (text.equals("Humans have dominated technology.  I wish I could be a cow so I could just eat grass")) {
             mContentView.setText("Ayush Champaign");
