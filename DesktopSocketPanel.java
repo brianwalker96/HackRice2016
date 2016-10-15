@@ -1,4 +1,3 @@
-package com.hackrice2016.DesktopSocket;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -6,7 +5,7 @@ import java.net.*;
 import java.io.*;
 
 
-public class DesktopSocketPanel extends JPanel
+public class DesktopSocketPanel extends JPanel implements KeyListener
 {
     private JTextField box;
     private JLabel label;
@@ -15,24 +14,26 @@ public class DesktopSocketPanel extends JPanel
     private BufferedReader in;
 
     public DesktopSocketPanel() {
-        setLayout(new BorderLayout());
+        this.setPreferredSize(new Dimension(500,500));
+        addKeyListener(this);
+        //setLayout(new BorderLayout());
 
-        JPanel subpanel = new JPanel();
-        subpanel.setLayout(new FlowLayout());
-        add(subpanel, BorderLayout.NORTH);
+        //JPanel subpanel = new JPanel();
+        //subpanel.setLayout(new FlowLayout());
+       // add(subpanel, BorderLayout.NORTH);
 
-        box = new JTextField("Test", 10);
-        box.setHorizontalAlignment(SwingConstants.LEFT);
-        subpanel.add(box);
+        //box = new JTextField("Test", 100);
+        //box.setHorizontalAlignment(SwingConstants.LEFT);
+        //subpanel.add(box);
 
-        JButton button = new JButton("Send");
-        button.addActionListener(new Listener());
-        subpanel.add(button);
+        //JButton button = new JButton("Send");
+        //button.addActionListener(new Listener());
+        //subpanel.add(button);
 
-        label = new JLabel("Received");
-        add(label, BorderLayout.CENTER);
-
-        String host = "192.168.24.168";
+        //label = new JLabel("Received");
+        //add(label, BorderLayout.CENTER);
+        
+        String host = "192.168.24.210";//"192.168.24.168";//"127.0.0.1";////"10.0.2.15";//
         int port = 6666;
 
         try {
@@ -43,11 +44,35 @@ public class DesktopSocketPanel extends JPanel
             System.out.println("Error: could not connect to server!");
             System.exit(0);
         }
+        
+
     }
 
-    private class Listener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            out.println(box.getText());
-        }
+//     private class Listener implements ActionListener {
+//         public void actionPerformed(ActionEvent e) {
+//             out.println(box.getText());
+//         }
+//     }
+     public void addNotify() {
+        super.addNotify();
+        requestFocus();
     }
+    public void keyPressed(KeyEvent e) {
+      System.out.println("pressed");
+      if (e.isActionKey()){
+         out.println(e.getKeyText(e.getKeyCode()));
+      } else {
+         out.println(e.getKeyChar());
+      }
+    }
+
+    public void keyReleased(KeyEvent e) {
+      System.out.println("released");
+    }
+
+
+    public void keyTyped(KeyEvent e) {
+      System.out.println("typed");
+    }
+
 }
