@@ -16,81 +16,96 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(Collider))]
-public class Teleport : MonoBehaviour, IGvrGazeResponder {
-  private Vector3 startingPosition;
-  private GameObject text = gameObject.Find("text");
-  private GameObject cube = gameObject.Find("Cube");
+public class Teleport : MonoBehaviour, IGvrGazeResponder
+{
+    private Vector3 startingPosition;
 
-  void Start() {
-    startingPosition = transform.localPosition;
-    SetGazedAt(false);
-    text.transform.position = cube.transform.position;
-  }
+    void Start()
+    {
+        startingPosition = transform.localPosition;
+        SetGazedAt(false);
+        GameObject text1 = GameObject.Find("text1");
+        GameObject cube = GameObject.Find("Cube");
+        text1.transform.position = cube.transform.position;
+        text1.GetComponent<TextMesh>().text = "";
 
-  void LateUpdate() {
-    GvrViewer.Instance.UpdateState();
-    if (GvrViewer.Instance.BackButtonPressed) {
-      Application.Quit();
     }
-  }
 
-  public void SetGazedAt(bool gazedAt) {
-    GetComponent<Renderer>().material.color = gazedAt ? Color.green : Color.red;
-    if (gazedAt)
+    void LateUpdate()
+    {
+        GvrViewer.Instance.UpdateState();
+        if (GvrViewer.Instance.BackButtonPressed)
         {
-            text.GetComponent(MeshText).enabled = true;
+            Application.Quit();
         }
-    else
+    }
+
+    public void SetGazedAt(bool gazedAt)
+    {
+        GetComponent<Renderer>().material.color = gazedAt ? Color.green : Color.red;
+        if (gazedAt)
         {
-            text.GetComponent(MeshText).enabled = false;
+            GameObject.Find("text1").GetComponent<TextMesh>().text = "12345";
         }
-  }
+        else
+        {
+            GameObject.Find("text1").GetComponent<TextMesh>().text = "";
+        }
+    }
 
-  public void Reset() {
-    transform.localPosition = startingPosition;
-  }
+    public void Reset()
+    {
+        transform.localPosition = startingPosition;
+    }
 
-  public void ToggleVRMode() {
-    GvrViewer.Instance.VRModeEnabled = !GvrViewer.Instance.VRModeEnabled;
-  }
+    public void ToggleVRMode()
+    {
+        GvrViewer.Instance.VRModeEnabled = !GvrViewer.Instance.VRModeEnabled;
+    }
 
-  public void ToggleDistortionCorrection() {
-    GvrViewer.Instance.DistortionCorrectionEnabled =
-      !GvrViewer.Instance.DistortionCorrectionEnabled;
-  }
+    public void ToggleDistortionCorrection()
+    {
+        GvrViewer.Instance.DistortionCorrectionEnabled =
+          !GvrViewer.Instance.DistortionCorrectionEnabled;
+    }
 
 #if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
-  public void ToggleDirectRender() {
-    GvrViewer.Controller.directRender = !GvrViewer.Controller.directRender;
-  }
+    public void ToggleDirectRender()
+    {
+        GvrViewer.Controller.directRender = !GvrViewer.Controller.directRender;
+    }
 #endif  //  !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
 
-  public void TeleportRandomly() {
-    Vector3 direction = Random.onUnitSphere;
-    direction.y = Mathf.Clamp(direction.y, 0.5f, 1f);
-    float distance = 2 * Random.value + 1.5f;
-    transform.localPosition = direction * distance;
-    gameObject.Find("text").transform.position = gameObject.Find("Cube").transform.position;
+    public void TeleportRandomly()
+    {
+        Vector3 direction = Random.onUnitSphere;
+        direction.y = Mathf.Clamp(direction.y, 0.5f, 1f);
+        float distance = 2 * Random.value + 1.5f;
+        transform.localPosition = direction * distance;
+        GameObject.Find("text1").transform.position = GameObject.Find("Cube").transform.position;
     }
 
-  #region IGvrGazeResponder implementation
+    #region IGvrGazeResponder implementation
 
-  /// Called when the user is looking on a GameObject with this script,
-  /// as long as it is set to an appropriate layer (see GvrGaze).
-  public void OnGazeEnter() {
-    SetGazedAt(true);
-  }
+    /// Called when the user is looking on a GameObject with this script,
+    /// as long as it is set to an appropriate layer (see GvrGaze).
+    public void OnGazeEnter()
+    {
+        SetGazedAt(true);
+    }
 
-  /// Called when the user stops looking on the GameObject, after OnGazeEnter
-  /// was already called.
-  public void OnGazeExit() {
-    SetGazedAt(false);
-  }
+    /// Called when the user stops looking on the GameObject, after OnGazeEnter
+    /// was already called.
+    public void OnGazeExit()
+    {
+        SetGazedAt(false);
+    }
 
-  /// Called when the viewer's trigger is used, between OnGazeEnter and OnGazeExit.
-  public void OnGazeTrigger() {
-    TeleportRandomly();
-  }
+    /// Called when the viewer's trigger is used, between OnGazeEnter and OnGazeExit.
+    public void OnGazeTrigger()
+    {
+        TeleportRandomly();
+    }
 
-  #endregion
+    #endregion
 }
