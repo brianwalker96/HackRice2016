@@ -92,6 +92,7 @@ public class Teleport : MonoBehaviour, IGvrGazeResponder
     public void OnGazeEnter()
     {
         SetGazedAt(true);
+
     }
 
     /// Called when the user stops looking on the GameObject, after OnGazeEnter
@@ -99,6 +100,7 @@ public class Teleport : MonoBehaviour, IGvrGazeResponder
     public void OnGazeExit()
     {
         SetGazedAt(false);
+
     }
 
     /// Called when the viewer's trigger is used, between OnGazeEnter and OnGazeExit.
